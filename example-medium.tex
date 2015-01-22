@@ -1,0 +1,99 @@
+\documentclass{article}
+
+\usepackage{ifpdf,ifxetex,ifluatex} 
+\ifpdf
+    \typeout{^^J *** PDF mode *** }
+\else
+    \typeout{^^J *** DVI mode ***}
+\fi
+
+\ifluatex
+    \typeout{ *** LuaLaTeX *** ^^J}
+    % patch \typein
+    % see http://tex.stackexchange.com/questions/12435/
+    % incompatibilities-between-lualatex-and-typein
+    \makeatletter
+    \def\@xtypein[#1]#2{%
+        \typeout{#2}%
+        \@tempcnta\endlinechar
+        \endlinechar\m@ne
+        \read\@inputcheck to#1%
+        \endlinechar\@tempcnta
+        \@typein}
+    \makeatother 
+    % LuaLaTeX specific code
+\else\ifxetex
+    \typeout{ *** XeLaTeX *** ^^J}
+    % XeLaTeX specific code
+
+    \usepackage{fontspec}
+    \defaultfontfeatures{Mapping=tex-text}
+
+    \setmainfont[
+      Extension = .otf,
+      UprightFont = *-regular,
+      BoldFont = *-bold,
+      ItalicFont = *-italic,
+      BoldItalicFont = *-bolditalic,
+    ]{xits}
+
+    \usepackage{polyglossia}
+    \setmainlanguage{english}
+
+    \usepackage[]{unicode-math}
+\else
+    \typeout{ *** LaTeX *** ^^J}
+
+%     \usepackage[utf8x]{inputenc}
+    \usepackage[utf8]{inputenc}
+    \usepackage[english]{babel}
+    \usepackage[T1]{fontenc}
+
+    %\usepackage{lmodern}
+    \usepackage[adobe-utopia]{mathdesign}
+    \usepackage[kerning=true,babel=true]{microtype}
+    \usepackage{textcomp}
+
+\fi\fi
+
+\usepackage[
+  backend=biber,
+%   style=alphabetic,
+    style=numeric,
+    sorting=none,
+%   citestyle=alphabetic,
+%   bibstyle=authoryear,
+  url=false,
+%   hyperref,
+  doi=false,
+]{biblatex}
+
+\AtEveryBibitem{% Clean up the bibtex rather than editing it
+ \clearlist{address}
+ \clearfield{date}
+ \clearfield{eprint}
+ \clearfield{isbn}
+ \clearfield{issn}
+ \clearlist{location}
+ \clearfield{month}
+ \clearfield{series}
+ \clearfield{title}
+ \clearlist{language}
+ 
+ \ifentrytype{book}{}{% Remove publisher and editor except for books
+  \clearlist{publisher}
+  \clearname{editor}
+ }
+}
+
+\addbibresource{abbrv_medium.bib}
+\addbibresource{kclus_papers.bib}
+\addbibresource{kclus_theses.bib}
+\addbibresource{kclus_proceedings.bib}
+
+\begin{document}
+  \nocite{*}
+
+  \printbibliography
+
+\end{document}
